@@ -26,6 +26,7 @@ var dayModule = (function () {
   // Day class and setup
 
   function Day (data) {
+    console.log('day data', data)
     // for brand-new days
     this.number = 0;
     this.hotel = null;
@@ -93,6 +94,7 @@ var dayModule = (function () {
   // day updating
 
   Day.prototype.addAttraction = function (attraction) {
+    console.log('addAttraction', attraction);
     // adding to the day object
     switch (attraction.type) {
       case 'hotel':

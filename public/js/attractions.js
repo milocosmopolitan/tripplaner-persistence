@@ -7,16 +7,23 @@
  * to add an attraction in the `options` module.
  */
 
+
 var attractionsModule = (function () {
 
-  // application state
+  var enhanced;
 
-  var enhanced = {
-    hotels: hotels.map(attractionModule.create),
-    restaurants: restaurants.map(attractionModule.create),
-    activities: activities.map(attractionModule.create),
-  }
+  $.ajax({
+    url: '/api',
+    method: 'get'
+  }).then((data)=>{
 
+    enhanced = {
+      hotels: data.hotels.map(attractionModule.create),
+      restaurants: data.restaurants.map(attractionModule.create),
+      activities: data.activities.map(attractionModule.create)
+    }
+  })
+  
   // private helper methods (only available inside the module)
 
   function findById (array, id) {

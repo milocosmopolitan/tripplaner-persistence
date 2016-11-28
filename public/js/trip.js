@@ -47,41 +47,90 @@ var tripModule = (function () {
 
   function addDay () {
     if (this && this.blur) this.blur(); // removes focus box from buttons
+
+    // Promise latancy
+
+
     var newDay = dayModule.create({ number: days.length + 1 }); // dayModule
+
     days.push(newDay);
     if (days.length === 1) {
       currentDay = newDay;
     }
-    switchTo(newDay);
+
+    $.ajax({
+      url: '/api/days',
+      method: 'post',
+      data: { number: days.length}
+    }).then((result)=>{
+      console.log('addDay',result);
+
+      days[days.length-1].hotel = result.hotel
+
+      switchTo(newDay);
+      
+    })
   }
 
-  function deleteCurrentDay () {
+function deleteCurrentDay() {
     // prevent deleting last day
-    if (days.length < 2 || !currentDay) return;
-    // remove from the collection
-    var index = days.indexOf(currentDay),
-      previousDay = days.splice(index, 1)[0],
-      newCurrent = days[index] || days[index - 1];
-    // fix the remaining day numbers
-    days.forEach(function (day, i) {
-      day.setNumber(i + 1);
-    });
-    switchTo(newCurrent);
-    previousDay.hideButton();
-  }
+    //console.log(currentDay.number);
+
+    $.ajax({
+        url: `/api/days/${currentDay.number}`,
+        method: 'delete'
+    }).then((result) => {
+        if (result) {
+            if (days.length < 2 || !currentDay) return;
+            // remove from the collection
+            var index = days.indexOf(currentDay),
+                previousDay = days.splice(index, 1)[0],
+                newCurrent = days[index] || days[index - 1];
+            // fix the remaining day numbers
+            days.forEach(function(day, i) {
+                day.setNumber(i + 1);
+            });
+            switchTo(newCurrent);
+            previousDay.hideButton();
+        }
+    })
+
+}
+
 
   // globally accessible module methods
 
   var publicAPI = {
 
     load: function () {
-      $(addDay);
+      $.ajax({
+        url: '/api/days',
+        method: 'get'
+      }).then((result)=>{
+        console.log(result);
+        result.forEach((day)=>{
+          console.log(day);
+          //days.push(day);
+          $(addDay);
+
+          //dayModule.create(day);
+        })
+      })
+
     },
 
     switchTo: switchTo,
 
     addToCurrent: function (attraction) {
-      currentDay.addAttraction(attraction);
+      $.ajax({
+        url: `/api/days/${currentDay.number}/${attraction.type}/${attraction.id}`,
+        method: 'post'
+      }).then((result) => {
+
+      })
+      console.log('attraction', attraction);
+      console.log('currentDay', currentDay);
+      currentDay.addAttraction(attraction);      
     },
 
     removeFromCurrent: function (attraction) {

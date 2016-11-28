@@ -48,9 +48,11 @@ app.use(function (err, req, res, next) {
 var port = 3000;
 app.listen(port, function () {
   console.log('The server is listening closely on port', port);
-  db.sync()
+  db.sync(/*{force:true}*/)
   .then(function () {
     console.log('Synchronated the database');
+
+    
   })
   .catch(function (err) {
     console.error('Trouble right here in River City', err, err.stack);

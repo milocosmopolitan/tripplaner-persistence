@@ -17,10 +17,51 @@ $(function(){
   var $restaurantSelect = $optionsPanel.find('#restaurant-choices');
   var $activitySelect = $optionsPanel.find('#activity-choices');
 
+
+  // $.ajax({
+  //   url: '/api',
+  //   method: 'get'
+  // }).then((data)=>{
+  //   data.hotels.forEach(makeOption, $hotelSelect);
+  //   data.restaurants.forEach(makeOption, $restaurantSelect);
+  //   data.activities.forEach(makeOption, $activitySelect);
+  // })
+  $.ajax({
+   url: '/api/hotels',
+   method: 'get'
+  })
+  .then(function(hotels){
+    //console.log('hotelsList');
+    //hotelsList = hotels;
+    hotels.forEach(makeOption, $hotelSelect);
+  }).catch();
+
+
+
+  $.ajax({
+   url: '/api/restaurants',
+   method: 'get'
+  })
+  .then(function(restaurants){
+    //restaurantsList = restaurants;
+    restaurants.forEach(makeOption, $restaurantSelect);
+  }).catch();
+
+
+
+  $.ajax({
+   url: '/api/activities',
+   method: 'get'
+  })
+  .then(function(activities){
+    //activitiesList = activities;
+    activities.forEach(makeOption, $activitySelect);
+  }).catch();
+
   // make all the option tags (second arg of `forEach` is a `this` binding)
-  hotels.forEach(makeOption, $hotelSelect);
-  restaurants.forEach(makeOption, $restaurantSelect);
-  activities.forEach(makeOption, $activitySelect);
+  // hotels.forEach(makeOption, $hotelSelect);
+  // restaurants.forEach(makeOption, $restaurantSelect);
+  // activities.forEach(makeOption, $activitySelect);
 
   function makeOption (databaseAttraction) {
     var $option = $('<option></option>') // makes a new option tag
